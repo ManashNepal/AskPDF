@@ -71,7 +71,7 @@ def get_custom_prompt():
 
 
 def get_conversation_chain(vector_store, custom_prompt):
-    llm = OllamaLLM(model="llama3:8b")
+    llm = OllamaLLM(model="llama3:8b", streaming = True)
     memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
     
     conversation_chain = ConversationalRetrievalChain.from_llm(

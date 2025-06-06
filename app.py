@@ -2,14 +2,18 @@ import streamlit as st
 from dotenv import load_dotenv
 from PyPDF2 import PdfReader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_ollama.llms import OllamaLLM  
 from langchain_community.vectorstores import FAISS
 from langchain_ollama import OllamaEmbeddings
 from langchain.memory import ConversationBufferMemory
 from langchain.chains.conversational_retrieval.base import ConversationalRetrievalChain
 from langchain_core.prompts.prompt import PromptTemplate
+from langchain_groq import ChatGroq
+from dotenv import load_dotenv
+import os
 
 from streamlit_chat import message
+
+load_dotenv()
 
 def get_pdf_text(pdfs):
     text = ""
@@ -71,7 +75,12 @@ def get_custom_prompt():
 
 
 def get_conversation_chain(vector_store, custom_prompt):
-    llm = OllamaLLM(model="llama3:8b", streaming = True)
+    # llm = OllamaLLM(model="llama3:8b", streaming = True)
+    llm = ChatGroq(
+        groq_api_key = os.getenv("GROQ_API_KEY"),
+        model_name = "llama-3.3-70b-versatile",
+        streaming = True
+    )
     memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
     
     conversation_chain = ConversationalRetrievalChain.from_llm(

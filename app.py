@@ -50,11 +50,12 @@ def get_custom_prompt():
     - If the user asks for simpler wording, use easy language.
     - If the user asks for a brief answer, still provide a complete and helpful explanation.
     - If the answer cannot be found in the context, clearly say so.
+    - Use points in the answer only when necessary. Avoid using it all the time.
 
     Formatting Guidelines:
     1. Add a **clear heading** before the answer.
     2. Use **bold** for key terms or concepts.
-    3. Use **numbered or bulleted lists** when listing points.
+    3. Use **numbered or bulleted lists** when listing points. 
     4. Use **newlines** generously to improve readability.
     5. Use *italics* where needed.
     6. Format **math equations** clearly.

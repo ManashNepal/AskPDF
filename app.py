@@ -10,7 +10,6 @@ from langchain_core.prompts.prompt import PromptTemplate
 from langchain_groq import ChatGroq
 from dotenv import load_dotenv
 import os
-
 from streamlit_chat import message
 
 load_dotenv()
@@ -37,23 +36,26 @@ def get_vector_store(chunks):
     vector_store = FAISS.from_texts(texts=chunks, embedding=embeddings)
     return vector_store
 
-def get_custom_prompt():
-    custom_prompt = PromptTemplate.from_template("""
-    You are a helpful assistant that answers questions using **only the provided context**. 
+def get_custom_prompt(user_prompt):
+    custom_prompt = PromptTemplate(
+    input_variables=["user_prompt", "context", "question"],    
+    template=f"""
+    {user_prompt}
+
+    You must answer questions using **only the provided context**.  
     **Do not use or rely on any previous chat history unless it is clearly relevant.**  
     **Do not generate answers beyond the provided context.**
 
     Use the question exactly as given. Do not rephrase or reinterpret it.
 
     Answer requirements:
-    - Keep responses **detailed yet simple**.
+    - Keep responses **simple and short**.
     - If the user asks for simpler wording, use easy language.
     - If the user asks for a brief answer, still provide a complete and helpful explanation.
     - If the answer cannot be found in the context, clearly say so.
     - Use points in the answer only when necessary. Avoid using it all the time.
 
     Formatting Guidelines:
-    1. Add a **clear heading** before the answer.
     2. Use **bold** for key terms or concepts.
     3. Use **numbered or bulleted lists** when listing points. 
     4. Use **newlines** generously to improve readability.
@@ -64,10 +66,10 @@ def get_custom_prompt():
     ---
 
     Context:
-    {context}
+    {{context}}
 
     Question:
-    {question}
+    {{question}}
 
     Answer:
     """)
@@ -76,11 +78,9 @@ def get_custom_prompt():
 
 
 def get_conversation_chain(vector_store, custom_prompt):
-    # llm = OllamaLLM(model="llama3:8b", streaming = True)
     llm = ChatGroq(
         groq_api_key = os.getenv("GROQ_API_KEY"),
-        model_name = "llama-3.3-70b-versatile",
-        streaming = True
+        model_name = "llama-3.3-70b-versatile"
     )
     memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
     
@@ -133,13 +133,15 @@ def main():
     with st.sidebar:
         st.subheader("Your Documents")
         pdfs = st.file_uploader(label="Upload your PDFs and click on 'Process'", accept_multiple_files=True)
-        if st.button(label="Process", key="process_button"):
-            with st.spinner("Processing"):
+        user_prompt = st.text_area(label="How do you want your chatbot to behave?")
+        if st.button(label="Launch", key="launch_button"):
+            with st.spinner("Launching"):
                 raw_text = get_pdf_text(pdfs)
                 chunks = get_text_chunks(raw_text)
                 vector_store = get_vector_store(chunks)
-                custom_prompt = get_custom_prompt()
+                custom_prompt = get_custom_prompt(user_prompt)
                 st.session_state.conversation = get_conversation_chain(vector_store, custom_prompt)
+                st.success("Launched!")
 
         st.subheader("Reset Options")
         if st.button("Reset Conversation"):

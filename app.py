@@ -133,7 +133,7 @@ def main():
     with st.sidebar:
         st.subheader("Your Documents")
         pdfs = st.file_uploader(label="Upload your PDFs and click on 'Process'", accept_multiple_files=True)
-        user_prompt = st.text_area(label="How do you want your chatbot to behave?")
+        user_prompt = st.text_area(label="How do you want your chatbot to behave?", height = 200)
         if st.button(label="Launch", key="launch_button"):
             with st.spinner("Launching"):
                 raw_text = get_pdf_text(pdfs)

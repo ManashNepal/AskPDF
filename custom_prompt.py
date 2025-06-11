@@ -15,6 +15,8 @@ def get_custom_prompt(user_prompt):
         - If the user asks for simpler wording, use easy language.
         - If the user asks for a brief answer, still provide a complete and helpful explanation.
         - If the answer cannot be found in the context, clearly say so.
+        - Prefer answers in paragraphs rather than points.
+        - Use points only when you want to include checklists, comparisons, or step-by-step instructions
 
         Formatting Guidelines:
         2. Use **bold** for key terms or concepts.

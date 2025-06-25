@@ -11,7 +11,7 @@ load_dotenv()
 
 # Main App
 def main():
-    st.set_page_config(page_title="AskPDF", page_icon=":books:")
+    st.set_page_config(page_title="AskPDF", page_icon=":books:", layout="wide")
     context_manager = StreamlitContextManager()
 
     st.header("Chat with PDFs :books:")
@@ -30,7 +30,7 @@ def main():
     with st.sidebar:
         st.subheader("Your Documents")
         pdfs = st.file_uploader("Upload your PDFs and click on 'Process'", accept_multiple_files=True)
-        user_prompt = st.text_area("How do you want your chatbot to behave?", height=200)
+        user_prompt = st.text_area("How do you want your chatbot to behave?", height=200, placeholder="You are an experienced teacher skilled at explaining concepts in very simple and clear language. Please respond as if you are addressing a young child around five years old.")
 
         if st.button("Launch", key="launch_button"):
             with st.spinner("Launching..."):
